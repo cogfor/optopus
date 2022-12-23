@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 import datetime
-from typing import List
+
 from optopus.asset import Asset
 from optopus.data_objects import OwnershipType
 from optopus.option import RightType
-from optopus.strategy import Strategy, StrategyType, Leg
-
-from optopus.short_put_vertical_spread import ShortPutVerticalSpread
 from optopus.optopus import Optopus
+from optopus.short_put_vertical_spread import ShortPutVerticalSpread
 from optopus.utils import to_df
 
 
@@ -40,7 +38,7 @@ class Taco:
             & (df["price_pct"] < self._minimum_underlying_decline)
             & (df["volume"] > self._minimum_underlying_volume)
 
-        ]
+            ]
         print("Filtered ETFs\n")
         print(df["code"])
         assets_with_positions = {s.code for s in strategies.values()}
@@ -51,7 +49,7 @@ class Taco:
                 self._bull_put_spread(asset, expiration, maximum_risk)
 
     def _bull_put_spread(
-        self, asset: Asset, expiration: datetime.date, maximum_risk: float
+            self, asset: Asset, expiration: datetime.date, maximum_risk: float
     ):
 
         """
@@ -94,7 +92,7 @@ class Taco:
             # OTM puts filter
             df = df[
                 (df["right"] == RightType.Put.value) & (df["strike"] <= asset.current.market_price)
-            ]
+                ]
             # nearest ATM option
             sell_strike = df.iloc[-1, df.columns.get_loc("strike")]
             sell_midpoint = df.iloc[-1, df.columns.get_loc("midpoint")]
@@ -106,7 +104,7 @@ class Taco:
             df = df[
                 (df["spread"] <= self._maximum_price_spread)
                 & (df["volume"] > self._minimum_option_volume)
-            ]
+                ]
 
             print(
                 df[["code", "strike", "right", "spread", "volume", "risk", "reward", "ROI"]]
@@ -116,7 +114,7 @@ class Taco:
                 # Long put filter
                 df = df[
                     (df["reward"] > self._minimum_reward) & (df["ROI"] > self._minimum_ROI)
-                ]
+                    ]
                 buy_strike = df.loc[df["ROI"].idxmax()]["strike"]
 
                 sell_option = options[f"{sell_strike}{RightType.Put.value}"]
@@ -129,4 +127,3 @@ class Taco:
                     asset, sell_option, buy_option, OwnershipType.Buyer
                 )
                 self._opt.new_strategy(strategy)
-

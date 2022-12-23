@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
-import datetime
-from optopus.asset import Asset
-from optopus.common import Currency
 from optopus.data_objects import OwnershipType
 from optopus.option import Option, RightType
 from optopus.strategy import Strategy, StrategyType, Leg, DefinedStrategy
+
 
 # https://safertrader.com/credit-spread-screening/
 class ShortPutVerticalSpread(DefinedStrategy):
     def __init__(self, buy_put: Option, sell_put: Option, profit_factor: float = 0.5):
         if (
-            not (buy_put.id.right == RightType.Put
-            and sell_put.id.right == RightType.Put)
+                not (buy_put.id.right == RightType.Put
+                     and sell_put.id.right == RightType.Put)
         ):
             raise ValueError("Wrong options right")
 
@@ -53,9 +51,9 @@ class ShortPutVerticalSpread(DefinedStrategy):
     @property
     def maximum_loss(self):
         return (
-            self.strategy.legs[1].strike
-            - self.strategy.legs[0].strike
-            + self.entry_price
+                self.strategy.legs[1].strike
+                - self.strategy.legs[0].strike
+                + self.entry_price
         ) * self.strategy.multiplier
 
     @property
@@ -70,4 +68,3 @@ class ShortPutVerticalSpread(DefinedStrategy):
             f"max_loss {self.maximum_loss}\n"
             f"ROI {self.ROI}\n"
         )
-

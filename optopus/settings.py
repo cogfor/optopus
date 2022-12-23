@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # TODO: import from a cfg file
-from optopus.data_objects import Currency
 import datetime
+
+from optopus.data_objects import Currency
 
 CURRENCY = Currency.USDollar
 HISTORICAL_YEARS = 1

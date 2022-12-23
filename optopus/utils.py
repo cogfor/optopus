@@ -1,12 +1,15 @@
-from collections import OrderedDict
 import datetime
+from collections import OrderedDict
 from enum import Enum
 from typing import List, Any
 from urllib import request, parse
+
 import pandas as pd
 from pandas import DataFrame
+
 from optopus.asset import Asset
 from optopus.option import Option, OptionId
+
 
 def to_df(items: List[Any]) -> DataFrame:
     rows = []
@@ -14,12 +17,12 @@ def to_df(items: List[Any]) -> DataFrame:
         rows = assets_to_df(items)
     elif all([isinstance(i, Option) for i in items]):
         rows = options_to_df(items)
-    else: 
+    else:
         for i in items:
             d = OrderedDict()
             for attr in dir(i):
-                #print(vars(i))
-                #print(dir(i))
+                # print(vars(i))
+                # print(dir(i))
                 value = getattr(i, attr)
                 if not any([isinstance(value, list),
                             isinstance(value, dict),
@@ -27,6 +30,7 @@ def to_df(items: List[Any]) -> DataFrame:
                     d[attr] = value.value if isinstance(value, Enum) else value
             rows.append(d)
     return pd.DataFrame(rows)
+
 
 def assets_to_df(items: List[Any]) -> OrderedDict:
     rows = []
@@ -39,21 +43,22 @@ def assets_to_df(items: List[Any]) -> OrderedDict:
         for attr in dir(i.current):
             value = getattr(i.current, attr)
             if not any([isinstance(value, list),
-                            isinstance(value, dict),
-                            isinstance(value,tuple),
-                            attr[0:2] == '__']):
-                    d[attr] = value.value if isinstance(value, Enum) else value
-        
+                        isinstance(value, dict),
+                        isinstance(value, tuple),
+                        attr[0:2] == '__']):
+                d[attr] = value.value if isinstance(value, Enum) else value
+
         for attr in dir(i.measures):
             value = getattr(i.measures, attr)
             if not any([isinstance(value, list),
-                            isinstance(value, dict),
-                            isinstance(value,tuple),
-                            attr[0:2] == '__']):
-                    d[attr] = value.value if isinstance(value, Enum) else value
+                        isinstance(value, dict),
+                        isinstance(value, tuple),
+                        attr[0:2] == '__']):
+                d[attr] = value.value if isinstance(value, Enum) else value
 
         rows.append(d)
     return rows
+
 
 def options_to_df(items: List[Any]) -> OrderedDict:
     rows = []
@@ -69,20 +74,21 @@ def options_to_df(items: List[Any]) -> OrderedDict:
         for attr in dir(i):
             value = getattr(i, attr)
             if not any([isinstance(value, list),
-                            isinstance(value, dict),
-                            isinstance(value, OptionId),
-                            attr[0:2] == '__']):
-                    d[attr] = value.value if isinstance(value, Enum) else value
+                        isinstance(value, dict),
+                        isinstance(value, OptionId),
+                        attr[0:2] == '__']):
+                d[attr] = value.value if isinstance(value, Enum) else value
         rows.append(d)
     return rows
+
 
 def plot_option_positions(positions, underlying_price: float):
     import matplotlib.pyplot as plt
     fig = plt.figure(figsize=(12, 2))
     ax = fig.add_subplot(111)
 
-    #ax.set_frame_on(False)
-    #ax.get_yaxis().set_visible(False)
+    # ax.set_frame_on(False)
+    # ax.get_yaxis().set_visible(False)
 
     x_min = underlying_price
     x_max = underlying_price
@@ -90,7 +96,7 @@ def plot_option_positions(positions, underlying_price: float):
         x = pos['strike']
         y = -2 if pos['ownership'] == 'SELL' else 0.7
         color = SELL_COLOR if pos['ownership'] == 'SELL' else BUY_COLOR
-        
+
         ax.annotate('   ' + pos['right'] + '\n' + str(pos['strike']),
                     xy=(x, y),
                     xycoords='data',
@@ -122,10 +128,10 @@ def plot_option_positions(positions, underlying_price: float):
     plt.plot([], [])
 
 
-#nan = float('nan')
+# nan = float('nan')
 
 
-#def is_nan(x: float) -> bool:
+# def is_nan(x: float) -> bool:
 #    """
 #    Not a number test.
 #    """
@@ -147,10 +153,10 @@ def format_ib_date(d: datetime.date) -> str:
 
 
 def notify(event: str, value1: str = None, value2: str = None, value3: str = None):
-    data = {'value1': value1, 'value2': value2, 'value3': value3}  
+    data = {'value1': value1, 'value2': value2, 'value3': value3}
     data = parse.urlencode(data).encode()
     url = f'https://maker.ifttt.com/trigger/{event}/with/key/cy0nEe3pY7MJjeLakJNeL-'
-    
+
     req = request.Request(url, data=data)
     resp = request.urlopen(req)
     print(resp.read())

@@ -1,7 +1,8 @@
-from dataclasses import dataclass
 import datetime
+from dataclasses import dataclass
 from typing import Any, Tuple
-from optopus.common import AssetType, Currency, Direction
+
+from optopus.common import AssetType, Currency
 
 
 @dataclass(frozen=True)
@@ -59,6 +60,7 @@ class History:
     values: Tuple[Bar]
     created: datetime.datetime = datetime.datetime.now()
 
+
 # TODO: expected_range > Tuple(,)
 # https://www.optionsanimal.com/using-implied-volatility-determine-expected-range-stock/
 @dataclass(frozen=True)
@@ -78,7 +80,8 @@ class Measures:
     very_slow_sma: Tuple
     fast_sma_speed: Tuple
     fast_sma_speed_diff: Tuple
-    
+
+
 @dataclass(frozen=True)
 class Forecast:
     direction: Tuple
@@ -104,11 +107,13 @@ class Stock(Asset):
             raise ValueError("Wrong AssetType for stock asset")
         super().__init__(id)
 
+
 class ETF(Asset):
     def __init__(self, id: AssetId):
         if not id.asset_type == AssetType.ETF:
             raise ValueError("Wrong AssetType for stock asset")
         super().__init__(id)
+
 
 class Index(Asset):
     def __init__(self, id: AssetId):

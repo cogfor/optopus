@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from optopus.common import AssetDefinition, AssetType
 
-
 # TODO: load the wath list from a json
 WATCH_LIST = {
     "DIA": AssetType.ETF,

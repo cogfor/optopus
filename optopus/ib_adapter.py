@@ -8,25 +8,22 @@ Created on Sun Aug  5 07:21:38 2018
 import datetime
 import logging
 from typing import List, Dict, Tuple
-from pathlib import Path
 
-from ib_insync.ib import IB, Contract
 from ib_insync.contract import Index as IBIndex, Option as IBOption, Stock as IBStock
+from ib_insync.ib import IB, Contract
 from ib_insync.objects import (
     AccountValue,
-    Position as IBPosition,
-    Fill,
-    CommissionReport,
     ComboLeg,
 )
-from ib_insync.order import Trade as IBTrade, LimitOrder, StopOrder
+from ib_insync.order import Trade as IBTrade, LimitOrder
+
 from optopus.asset import AssetId, Asset, Current, History, Bar, Stock, ETF, Index
 from optopus.common import AssetType, AssetDefinition, Currency
+from optopus.data_manager import DataAdapter
 from optopus.data_objects import Position, OwnershipType, Account, OrderStatus, Trade
 from optopus.option import Option, OptionId, RightType
+from optopus.settings import CURRENCY, HISTORICAL_YEARS
 from optopus.strategy import StrategyType, Strategy
-from optopus.data_manager import DataAdapter
-from optopus.settings import CURRENCY, HISTORICAL_YEARS, DTE_MAX, DTE_MIN, EXPIRATIONS
 from optopus.utils import parse_ib_date, format_ib_date
 
 
@@ -310,11 +307,11 @@ class IBDataAdapter(DataAdapter):
             assets = {}
             for qc in q_contracts:
                 id = AssetId(
-                        code=qc.symbol,
-                        asset_type=watchlist_dict[qc.symbol].asset_type,
-                        currency=self._translator._currency_translation[qc.currency],
-                        contract=qc,
-                    )
+                    code=qc.symbol,
+                    asset_type=watchlist_dict[qc.symbol].asset_type,
+                    currency=self._translator._currency_translation[qc.currency],
+                    contract=qc,
+                )
                 if id.asset_type == AssetType.Stock:
                     assets[id.code] = Stock(id)
                 elif id.asset_type == AssetType.ETF:
@@ -431,7 +428,7 @@ class IBDataAdapter(DataAdapter):
             return self.create_options(asset, q_contracts)
 
     def create_options(
-        self, asset: Asset, q_contracts: List[Contract]
+            self, asset: Asset, q_contracts: List[Contract]
     ) -> Dict[str, Option]:
         tickers = []
         for q in chunks(q_contracts, 50):
@@ -498,5 +495,4 @@ def chunks(l: list, n: int) -> list:
     # For item i in a range that is a lenght of l
     for i in range(0, len(l), n):
         # Create an index range for l of n items:
-        yield l[i : i + n]
-
+        yield l[i: i + n]

@@ -1,9 +1,10 @@
-from dataclasses import dataclass
 import datetime
+from dataclasses import dataclass
 from enum import Enum
 from typing import Any
+
 from optopus.asset import AssetId
-from optopus.common import AssetType, Currency
+from optopus.common import AssetType
 
 
 class RightType(Enum):
@@ -32,7 +33,7 @@ class OptionId:
 @dataclass(frozen=True)
 class Option:
     id: OptionId
-    high: float 
+    high: float
     low: float
     close: float
     bid: float
@@ -62,4 +63,3 @@ class Option:
     @property
     def DTE(self):
         return (self.id.expiration - datetime.date.today()).days
-

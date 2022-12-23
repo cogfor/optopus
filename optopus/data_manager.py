@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
-import copy
 import datetime
 import logging
-from typing import Dict, Tuple
-from optopus.asset import Asset, History, Measures, AssetType, Forecast
-from optopus.data_objects import Portfolio
-from optopus.strategy import Strategy
+from typing import Tuple
+
+from optopus.asset import Measures, AssetType, Forecast
 from optopus.computation import (
     assets_loop_computation,
     assets_vector_computation,
     assets_directional_assumption,
-    portfolio_bwd,
 )
+from optopus.data_objects import Portfolio
+from optopus.strategy import Strategy
 from optopus.strategy_repository import StrategyRepository
-from optopus.settings import CURRENCY, MARKET_BENCHMARK
 
 
 class DataAdapter:
@@ -100,16 +98,16 @@ class DataManager:
         """
         measure_assets = {}
         measure_names = ('price_percentile', 'price_pct', 'iv', 'iv_rank', 'iv_percentile',
-        'iv_pct', 'stdev', 'beta', 'correlation', 'rsi', 'sma20', 'sma50', 'sma200')
+                         'iv_pct', 'stdev', 'beta', 'correlation', 'rsi', 'sma20', 'sma50', 'sma200')
         for a in self._assets.values():
             m = {}
-            for n in measure_names:    
+            for n in measure_names:
                 m[n] = None
             measure_assets[a.id.code] = m
-        
+
         loop_m = assets_loop_computation(self._assets, measure_assets)
         vector_m = assets_vector_computation(self._assets, measure_assets)
-        #)
+        # )
         # self.portfolio.bwd = portfolio_bwd(self.strategies,
         #                                   self._assets,
         #                                   self._assets[MARKET_BENCHMARK].current.market_price)
@@ -136,8 +134,6 @@ class DataManager:
         directional_m = assets_directional_assumption(self._assets)
         for code, v in directional_m.items():
             self._assets[code].forecast = Forecast(v)
-
-    
 
     def option_chain(self, code: str, expiration: datetime.date) -> None:
         """Update option chain values
@@ -179,11 +175,11 @@ class DataManager:
                     self._log.warning(f"Leg {leg.leg_id} doesn't have any position")
 
             if (
-                strategy_positions
-                == sum(
-                    [leg.ratio * strategy.quantity for leg in strategy.legs.values()]
-                )
-                and not strategy.opened
+                    strategy_positions
+                    == sum(
+                [leg.ratio * strategy.quantity for leg in strategy.legs.values()]
+            )
+                    and not strategy.opened
             ):
                 strategy.opened = datetime.datetime.now()
                 self.update_strategy(strategy)

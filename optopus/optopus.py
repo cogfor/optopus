@@ -6,22 +6,22 @@ Created on Sat Aug  4 16:30:25 2018
 @author: ilia
 """
 import datetime
-from typing import List, Callable, Dict, Tuple
-from collections import OrderedDict
 import logging
-from optopus.data_manager import DataManager
-from optopus.order_manager import OrderManager
-from optopus.watch_list import WATCH_LIST
+from typing import List, Callable, Dict, Tuple
+
 from optopus.asset import Asset, AssetType
+from optopus.data_manager import DataManager
 from optopus.data_objects import Account, Portfolio
 from optopus.option import Option
-from optopus.strategy import Strategy
+from optopus.order_manager import OrderManager
 from optopus.settings import (
     SLEEP_LOOP,
     EXPIRATIONS,
     PRESERVED_CASH_FACTOR,
     MAXIMUM_RISK_FACTOR,
 )
+from optopus.strategy import Strategy
+from optopus.watch_list import WATCH_LIST
 
 
 class Optopus:
@@ -95,7 +95,7 @@ class Optopus:
     def loop(self) -> None:
 
         for t in self._broker._broker.timeRange(
-            datetime.time(0, 0), datetime.datetime(2100, 1, 1, 0), 10
+                datetime.time(0, 0), datetime.datetime(2100, 1, 1, 0), 10
         ):
             self._log.debug("Initiating loop iteration")
             self._data_manager.update_assets()
@@ -128,13 +128,11 @@ class Optopus:
         elif item == "fast_sma_speed":
             return self._data_manager.assets[code].measures.fast_sma_speed
         elif item == "fast_sma_speed_diff":
-            return self._data_manager.assets[code].measures.fast_sma_speed_diff        
+            return self._data_manager.assets[code].measures.fast_sma_speed_diff
         elif item == "direction":
             return self._data_manager.assets[code].forecast.direction
         else:
             return None
-
-
 
     def price_history(self, code: str) -> Tuple:
         return self._data_manager.assets[code].price_history
@@ -142,16 +140,16 @@ class Optopus:
     def iv_history(self, code: str) -> Tuple:
         return self._data_manager.assets[code].iv_history
 
-    def rsi_history(self, code:str) -> Tuple:
+    def rsi_history(self, code: str) -> Tuple:
         return self._data_manager.assets[code].measures.rsi
-    
-    def rsi_sma_history(self, code:str) -> Tuple:
+
+    def rsi_sma_history(self, code: str) -> Tuple:
         return self._data_manager.assets[code].measures.rsi_sma
 
-    def sma1_history(self, code:str) -> Tuple:
+    def sma1_history(self, code: str) -> Tuple:
         return self._data_manager.assets[code].measures.sma1
-    
-    def sma2_history(self, code:str) -> Tuple:
+
+    def sma2_history(self, code: str) -> Tuple:
         return self._data_manager.assets[code].measures.sma2
 
     def assets_matrix(self, field: str) -> dict:
@@ -182,4 +180,3 @@ class Optopus:
         maximum_risk = account.net_liquidation * MAXIMUM_RISK_FACTOR
 
         return min(maximum_risk, available_cash)
-

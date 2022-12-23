@@ -3,13 +3,17 @@ import logging
 import os
 from pathlib import Path
 from typing import List
+
+import jsonpickle
+
 from optopus.settings import (DATA_DIR, STRATEGY_DIR)
 from optopus.strategy import Strategy
-import jsonpickle
+
 
 class StrategyRepository:
     """Repository class for mananging strategies
     """
+
     def __init__(self) -> None:
         self._path = Path(Path.cwd() / DATA_DIR / STRATEGY_DIR)
         self._log = logging.getLogger(__name__)

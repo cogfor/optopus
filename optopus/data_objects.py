@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import datetime
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Tuple
-from optopus.common import AssetType, Currency, OwnershipType
+
+from optopus.common import AssetType, OwnershipType
 
 
 # TODO: Create a new file asset.py for Asset, Current, Measures, History...
@@ -65,15 +65,15 @@ class Position:
     @property
     def position_id(self):
         return (
-            self.code
-            + " "
-            + str(self.ownership.value)
-            + " "
-            + self.right.value
-            + " "
-            + str(round(self.strike, 1))
-            + " "
-            + self.expiration.strftime("%d-%m-%Y")
+                self.code
+                + " "
+                + str(self.ownership.value)
+                + " "
+                + self.right.value
+                + " "
+                + str(round(self.strike, 1))
+                + " "
+                + self.expiration.strftime("%d-%m-%Y")
         )
 
 

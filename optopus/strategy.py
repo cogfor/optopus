@@ -1,8 +1,8 @@
-from collections import OrderedDict
-from dataclasses import dataclass
 import datetime
+from dataclasses import dataclass
 from enum import Enum
 from typing import Tuple
+
 from optopus.common import OwnershipType
 from optopus.option import Option
 
@@ -18,6 +18,7 @@ class Leg:
     option: Option
     ownership: OwnershipType
     ratio: int
+
     # FIXME: filled & commission are position fields?
     # filled: int
     # commission: float
@@ -62,7 +63,6 @@ class Strategy:
     @property
     def multiplier(self):
         return self.legs[0].option.id.multiplier
-
 
 
 class DefinedStrategy:
